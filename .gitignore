@@ -1,0 +1,13 @@
+
+*.obj
+*.exe
+*.map
+
+
+DPMI16BI.OVL
+Dpmimem.dll
+EDIT.INI
+TASM
+edit.com
+orig_files/
+tasml.bat
