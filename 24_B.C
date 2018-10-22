@@ -12,6 +12,18 @@ int main(void) {
     asm{
 	mov flag, 1;   // 1 indicates number is prime.
 
+	/*Exceptional check condition if number is 2, 3, 5, 7*/
+	mov ax, n;
+	cmp ax, 2;
+	jz final;
+	cmp ax, 3;
+	jz final;
+	cmp ax, 5;
+	jz final;
+	cmp ax, 7;
+	jz final;
+
+
 	// checking divisibility with 2;
 	mov ax, n;
 	mov bl, 2;
@@ -51,9 +63,9 @@ int main(void) {
     not_prime:asm{
 	mov flag, 0;
     }
-    final:asm{
 
-    }
+    final:asm{}
+
     if(flag){
 	printf("%d is a prime number.", n);
     } else {
