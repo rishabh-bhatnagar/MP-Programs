@@ -1,4 +1,4 @@
-Find minimum and maximum element of an array.
+;Find minimum and maximum element of an array.
 
 print macro x
 mov dx,offset x
@@ -7,7 +7,7 @@ int 21h
 endm
 
 data segment
-array1 db 3,2,5,8,1,0,9,7
+array1 db 10 dup(?)
 mn db ?
 mx db ?
 msg1 db 10,"Minimum:$"
@@ -16,13 +16,25 @@ data ends
 
 code segment
 assume cs: code,ds:data
-start: mov ax,data
-       mov ds,ax
-       lea bx,array1
-       xor si,si
-       mov cx,08
-       mov ah,00
-       mov al,09
+start: mov ax, data
+       mov ds, ax
+
+       mov cx, 08
+       lea bx, array1
+       mov ah, 01h
+       xor si, si
+
+       ln : int 21h
+            sub al, '0'
+            mov bx[si], al
+            inc si
+            loop ln
+
+       lea bx, array1
+       xor si, si
+       mov cx, 08
+       mov ah, 00
+       mov al, 09
     l4:cmp bx[si],ah
        jg l1
        cmp bx[si],al
