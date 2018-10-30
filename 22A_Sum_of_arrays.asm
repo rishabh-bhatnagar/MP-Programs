@@ -1,7 +1,3 @@
-; 22 A
-; Display sum of 10 user given array elements
-
-
 print_str macro x
     mov dx, offset x
     mov ah, 09h

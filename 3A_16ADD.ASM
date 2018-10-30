@@ -1,6 +1,3 @@
-; 3A
-; WAP to add two 16bit BCD and store BCD result in memory
-
 print_8 macro x
     
     ; get higher digit into dl

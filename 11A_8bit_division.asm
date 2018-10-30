@@ -1,8 +1,3 @@
-; 11 a
-; Write ALP to take two 8bit BCD input
-; and display quotient and remainder
-; as BCD on screen
-
 print_str macro x
     mov dx, offset x
     mov ah, 09h

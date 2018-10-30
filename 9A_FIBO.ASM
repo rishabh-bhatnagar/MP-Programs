@@ -1,6 +1,3 @@
-; 9A
-; Find fibonacci numbers upto N
-
 data segment
     fibArr  DB 25 DUP(0)
     fibLen  DW 11

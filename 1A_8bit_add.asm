@@ -1,10 +1,26 @@
+Print macro x
+    mov dx, offset x
+    mov ah, 09
+    int 21h
+endm
+
+get_bit macro
+    mov ah, 01
+    int 21h
+    sub al, 30h
+    mov bl, al
+    int 21h
+    sub al, 30h
+    rol bl, 04
+    add al, bl
+endm
+
 data segment
-n1 db ?
-n2 db ?
-msg1 db,10, "Enter number 1 $"
-msg2 db,10, "Enter number 2 $"
-msg7 db,10, "Sum = $ "
-c db ?
+    n1 db ?
+    n2 db ?
+    msg1 db,10, "Enter number 1 $"
+    msg2 db,10, "Enter number 2 $"
+    msg3 db,10, "Sum = $ "
 data ends
 
 code segment
@@ -13,50 +29,28 @@ start:
         mov ax,data
         mov ds,ax
 
-        mov dx,offset msg1
-        mov ah,09
-        int 21h
+        Print msg1
 
-        mov ah,01
-        int 21h
-        sub al,30h
-        mov bl,al
-        int 21h
-        sub al,30h
-        rol bl,04
-        add al,bl
+        get_bit
         mov n1,al
 
-        mov dx,offset msg2
-        mov ah,09
-        int 21h
+        Print msg2
 
-        mov ah,01
-        int 21h
-        sub al,30h
-        mov bl,al
-        int 21h
-        sub al,30h
-        rol bl,04
-        add al,bl
+        get_bit
         mov n2,al
 
-        cmp c,01
-        jz ad
+        Print msg3
 
+        xor ax,ax               ;clear junk values if any
 
-    ad: mov dx,offset msg7
-        mov ah,09
-        int 21h
+        mov al,n1               ;
+        add al,n2               ; <-- addition of two numbers
+        daa                     ; 
+        mov bx,ax               ;
 
-        xor ax,ax
-        mov al,n1
-        add al,n2
-        daa
-        mov bx,ax
+        mov cl,bl               
+        rol cl,04               
 
-        mov cl,bl
-        rol cl,04
         and cl,0fh
         add cl,30h
 
@@ -66,6 +60,7 @@ start:
 
         and bl,0fh
         add bl,30h
+
         mov dx,bx
         mov ah,02
         int 21h
