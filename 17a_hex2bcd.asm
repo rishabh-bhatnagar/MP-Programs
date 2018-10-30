@@ -1,102 +1,49 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-print_string macro x
-mov dx, offset x
-mov ah, 09
-int 21h
+Print macro x
+	mov dx, offset x
+	mov ah, 09
+	int 21h
 endm
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-hex_to_bcd_8b macro x
-; assume x has 38                  // 0x38 = 56
-xor ah, ah;         ax <-- 00 xx
-mov al, x;          ax <-- 00 38     // 38 is hex equivaent of 56.
-aam;                ax <-- 05 06
-
-; what if number entered is >= 100, ah will become 0A.
-mov cx, ax ; temporarily storing before comparision.
-cmp ah, 09
-jg print_1
-mov ax, cx
-jmp normal
-
-print_1 : mov al, 1
-print_4b al
-mov ax, cx
-; suppose  123 was the number in dec,
-; ax would have ax <-- 0C 03
-; cx <-- 0B 02
-
-mov al, ah        ; ax <-- 0C 0C
-aam               ; ax <-- 01 02
-mov ah, al        ; ax <-- 02 02
-mov al, cl        ; ax <-- 02 03
-
-normal :ror ah, 04;   ax <-- 50 06
-add al, ah;           ax <-- 50 56
-mov x, al;             x <-- 56
-
-
-exit :
-
-endm;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-print_4b macro x
-mov ah, 02
-mov dl, x
-add dl, '0'
-int 21h
+get_input macro
+	mov ah, 01
+	int 21h
+	sub al, 30h
+	mov bl, al
+	int 21h
+	sub al, 30h
+	rol bl, 04
+	add al, bl
 endm
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-print_8b macro x
-; assuming x <-- 56
-
-; printing higher digit : 
-mov dl, x        ; dl <-- 56
-ror dl, 04       ; dl <-- 65
-and dl, 0fh      ; dl <-- 05
-print_4b dl
-
-;printing lower digit
-mov dl, x
-and dl, 0fh
-print_4b dl
-
-endm
-
-
-;#############################################################################
 
 data segment
-	init_num db 10, "initial hexadecimal number : $"
-    msg db 10, "Converted number is : $";
+    n1 db ?
+    msg1 db, 10, "Enter Hexadecimal Number: $"
+    n2 db ?
 data ends
 
-;#############################################################################
-
 code segment
-assume cs:code, ds:data
-start: mov ax, data
-	   mov ds, ax
+assume cs:code,ds:data
+start:  
+        mov ax,data
+        mov ds,ax
 
-	   mov bl, 73h;
+        Print msg1
 
-	   print_string init_num
-	   print_8b bl
+        get_input
+        mov n1, al
 
-	   print_string msg
-	   
-	   hex_to_bcd_8b bl
-	   print_8b bl
+        xor ax,ax
+        mov al, n1
 
-	   mov ah, 4ch
-	   int 21h
+        aam           ;unpacks the number and stores it in ah and al.
+
+        mov cl, ah    ; store ah into cl.
+        rol cl, 04    ; rolled to left by 4 bits, for example 05 becomes 50.
+
+        add cl, al    ; added al and cl and stored in cl.
+
+        
+        mov ah,4ch
+        int 21h
 code ends
 end start
-
-;#############################################################################
