@@ -1,58 +1,59 @@
-get_str macro x
-	mov ah, 0ah
-	lea dx, x
-	int 21h
+get_str macro str
+    mov ah, 0ah
+    lea dx, str
+    int 21h
 endm
 
-Print macro x
-	mov ah,09
-	lea dx,x
-	int 21h
+Print macro str
+    mov ah, 09h
+    lea dx, str
+    int 21h
 endm
 
 data segment
 
-        str1 db 80 dup('$')
-        str2 db 80 dup('$')
-        msg1 db 10, 'ENTER THE FIRST STRING :$'
-        msg2 db 10, 'ENTER THE SECOND STRING :$'
-        msg3 db 10, 'THE TWO STRINGS ARE EQUAL$'
-        msg4 db 10, 'THE TWO STRINGS ARE NOT EQUAL$'
+        STR1 DB 80,80 DUP('$')
+        STR2 DB 80,80 DUP('$')
+        MSG1 DB 10,13,'ENTER THE FIRST STRING :$'
+        MSG2 DB 10,13,'ENTER THE SECOND STRING IS :$'
+        MSG3 DB 10,13,'THE TWO STRINGS ARE EQUAL$'
+        MSG4 DB 10,13,'THE TWO STRINGS ARE NOT EQUAL$'
 data ends
 
 
 code segment
-assume cs:code,ds:data
-start:
 
-         mov ax, data
-         mov es, ax
-         mov ds, ax
+        assume cs:code, ds:data, es:data
+        start:
 
-         Print msg1
-         get_str str1
+                 mov ax, data
+                 mov es, ax
+                 mov ds, ax
+        
+                 Print MSG1
+                 get_str STR1
 
-         Print msg2
-         get_str str2
-       
-         lea si, str1 + 2
-         lea si, str2 + 2
-       
-         mov cl, str1 + 1      ; for storing the length of the string
-         mov ch, 00h
-
-         repe cmpsb
-         jne notequal
-
-         Print msg3
-         jmp last
-
-     notequal:
-         Print msg4
-
-     last:      
-         mov ax,4ch
-         int 21h
+                 Print MSG2
+                 get_str STR2
+               
+                 lea si,STR1+2
+                 lea di,STR2+2
+               
+                 mov cl,STR1+1 ;FOR STORING THE LENGTH OF THE STRING
+                 mov ch,00H
+        
+                 repe cmpsb
+                 jne notequal
+        
+                 Print MSG3
+                 jmp last
+        
+             notequal:
+                 Print MSG4
+        
+             last:      
+                 mov ax,4C00H
+                 int 21h
         
 code ends
 end start

@@ -41,6 +41,8 @@ start:
 
         Print msg3
 
+
+
         xor ax,ax               ;clear junk values if any
 
         mov al,n1               ;
@@ -48,7 +50,13 @@ start:
         daa                     ; 
         mov bx,ax               ;
 
-        mov cl,bl               
+        jnc L1                  ; checks if carry is present or not
+
+        mov dl, 31h             ; print 1 if carry present.
+        mov ah, 02
+        int 21h
+
+    L1: mov cl,bl               
         rol cl,04               
 
         and cl,0fh

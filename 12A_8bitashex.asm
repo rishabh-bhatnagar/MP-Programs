@@ -30,7 +30,6 @@ start:  mov ax, data
         get_input
         
         aad               ; now ah has first digit and al has second digit of num1, pack 16bit digit to 8bit using aad
-        aam               ; expand 8bit al to 16bit ax
 
         Print msg1
 

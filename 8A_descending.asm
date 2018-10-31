@@ -1,3 +1,9 @@
+Print macro x
+	mov dx, offset x
+	mov ah, 09
+	int 21h
+endm
+
 data segment
 	msg db 10, "Enter the number$"
 	n db ?
@@ -9,9 +15,7 @@ code segment
 	start:  mov ax,data
 			mov ds,ax
 
-			mov dx,offset msg
-			mov ah,09
-			int 21h
+			Print msg
 
 			mov ah,01
 			int 21h

@@ -16,7 +16,6 @@ get_bit macro
 endm
 
 
-
 data segment
     n1 db ?
     n2 db ?
@@ -74,9 +73,9 @@ start:
         mov al,ah
         xor ah,ah
         aam
+        
         mov dl,ah
         mov bl,al
-
         add dl,30h
         mov ah,02
         int 21h

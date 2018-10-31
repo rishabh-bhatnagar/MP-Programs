@@ -44,35 +44,31 @@ sum1:
     inc si
     loop sum1
 
-
     print_str strAns
 
     ; convert 8bit hex to bcd
     mov al, sum
 
-convert_hex:
-    xor bx, bx
-    mov bx, 10
-    xor cx, cx
-    mov ah, 00
 
-    conv1:
-        xor dx, dx
-        div bx
+    aam           ;unpacks the number and converts into bcd and stores it in ah and al.
+    
+    
+    mov bl, al    ; store al into bl
+    mov cl, ah    ; store ah into cl.
 
-        push dx
-        inc cx
+    and cl, 0fh
+    add cl, 30h
 
-        cmp ax, 00
-        jne conv1
+    mov dx,cx
+    mov ah,02
+    int 21h
 
-    conv2:
-        pop dx
-        add dl, 30h
-        mov ah, 02h
-        int 21h
+    and bl,0fh
+    add bl,30h
 
-        loop conv2
+    mov dx,bx
+    mov ah,02
+    int 21h
 
 
 
