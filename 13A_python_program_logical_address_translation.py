@@ -13,10 +13,11 @@ mm = list(range(n_pages))
 jumble(mm)                #mm : main memory.
 
 
-print("Structure of Main Memory : \n\n")
-print("\n".join(["     {}       \t{}".format(i, mm[i]) for i in range(n_pages)]))
+print("Structure of Main Memory : \n")
+print("Segment No \t Page No")
+print("\n".join(["  {}\t\t  {}".format(i, mm[i]) for i in range(n_pages)]))
 
-l_addr = int(input("Enter the logical address : "))
+print("Enter the logical address : ")
 page_no = int(input("Enter the page number : "))
 offset = int(input("Enter the offset : "))
 
