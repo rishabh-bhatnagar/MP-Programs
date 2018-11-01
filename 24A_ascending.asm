@@ -1,86 +1,82 @@
-Display N natural numbers in descening order and storing it in an array.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Steps :
-;   1) take number in hexadecimal :
-;   .   for that, store msb in ah, lsb in al
-;   .   use aad
-;   2)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-get_hexa_number macro x
-;  x is an 8 bit register.
-mov ah, 01
-
-int 21h       ; getting higher byte
-sub al, 30h   ; getting ascii equivalent.
-
-mov bl, al    ; saving lower nibble temporarily
-
-int 21h
-sub al, 30h   ; getting lower byte in ascii
-
-mov ah, bl
-aad           ; bcd in ah and al to hexa in al
-mov x, al
-
+Print macro x
+    mov dx, offset x
+    mov ah, 09
+    int 21h
 endm
 
+get_input macro x
+    ;  x is an 8 bit register.
+    mov ah, 01
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    int 21h       ; getting higher byte
+    sub al, 30h   ; getting ascii equivalent.
+
+    mov bl, al    ; saving lower nibble temporarily
+
+    int 21h
+    sub al, 30h   ; getting lower byte in ascii
+
+    mov ah, bl
+    aad           ; bcd in ah and al to hexa in al
+    mov x, al
+endm
+
+print_bit macro x
+    mov dl, x
+    add dl, 30h
+    mov ah, 02
+    int 21h
+endm
+
 data segment
-prompt db, 10, "Enter a number : $"
-array db 10 dup(?)
+    n1 db 0
+    array db 10 dup(?)
+    msg db, 10, "Enter Number: $"
 data ends
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 code segment
 assume cs:code, ds:data
-start:mov ax, data
-mov ds, ax
+start:
+        mov ax, data
+        mov ds, ax
 
-; displaying prompt message.
-mov ah, 09h
-mov dx, offset prompt
-int 21h
-; prompt end
+        Print msg
+        get_input n1
 
-get_hexa_number cl
+        lea bx, array
+        xor si, si
+        mov cl, 00       ; init start to 0
 
-; cl now has counter
-lea bx, array     ; getting physical address of start location of array in bx
-                  ; lea is load effective address.
-xor si, si
+    L1:     mov bx[si], cl
+            inc si
 
-L1:mov bx[si], cl
-inc si
+            xor ah, ah
+            mov al, cl
+            aam
 
+            mov ch, al
+            mov dl, ah
+            mov ah, 02
+            add dl, 30h
+            int 21h
 
-xor ah, ah
-mov al, cl      ; cl is a hexadecimal number
-aam             ; unpack from 0x to decimal as ah:al
+            mov dl,ch
+            add dl,30h
+            int 21h
 
-; displaying higher 4 bits
-mov ch, al
-mov dl, ah
-mov ah, 02
-add dl, 30h
-int 21h
+            ; printing a space:
+            mov dl, 20h
+            int 21h
 
-mov dl,ch
-add dl,30h
-int 21h
+            xor ch,ch
 
-; printing a space:
-mov dl, 20h
-int 21h
+            inc cl
+            cmp n1, cl
+            jnz L1
 
-xor ch,ch
-
-dec cl
-cmp cl, 00
-jnz L1
-
+    last:   mov ah, 4ch
+            int 21h
 code ends
 end start
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+

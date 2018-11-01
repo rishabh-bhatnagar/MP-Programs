@@ -12,19 +12,19 @@ start:
     mov cx, fibLen
     lea si, fibArr
     
-    mov al, 00
+    mov al, 00            ; intialize first number 0.
     mov [si], al
     inc si
 
-    mov bl, 01
+    mov bl, 01            ; intialize second number 1.
     mov [si], bl
     inc si
 
 next:
     add al, bl
-    mov [si], al
-    mov al, bl
-    mov bl, [si]
+    mov [si], al          ;
+    mov al, bl            ; <-- after adding change values of al and bl.
+    mov bl, [si]          ;
     inc si
     loop next
 
@@ -38,7 +38,7 @@ back:
     mov al, [si]
     aam
     mov bx, ax
-    add bx, 3030h
+    add bx, 3030h      ; add 30h into bh and bl.
     mov dl, bh
     mov ah, 02h
     int 21h
