@@ -5,34 +5,6 @@ int 21h
 endm
 
 data segment
-    str1 db, "rishabh bhatnagar$"
-    str2 db 16 dup('$')
-data ends
-
-code segment
-assume cs:code, ds:data
-start : mov ax, data
-        mov ds, ax
-        
-        xor si, si
-        xor di, di
-        
-        mov cx, 16     ; length of the string.
-        
-        lea si, str1
-        lea di, str2
-        repe movsb
-        
-        print_str str2
-code ends
-end start
-print_str macro x
-mov dx, offset x
-mov ah, 09
-int 21h
-endm
-
-data segment
     str1 db "rishabh$"
     str2 db 10 dup('$')
 data ends
@@ -52,6 +24,8 @@ start : mov ax, data
         
         print_str str2
         
+        mov ah, 4ch
+        int 21h        
 code ends
 end start
 
