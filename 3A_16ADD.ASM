@@ -1,3 +1,6 @@
+; 3A
+; WAP to add two 16bit BCD and store BCD result in memory
+
 print_8 macro x
     
     ; get higher digit into dl
@@ -21,9 +24,8 @@ print_8 macro x
 endm
 
 data segment
-    ; only use nums whose addition is <= 9
-    num1 DW 1111H
-    num2 DW 0801H
+    num1 DW 9899H
+    num2 DW 0901H
     ans  DW ?
 data ends
 
@@ -34,10 +36,46 @@ start:
     mov ax, data
     mov ds, ax
 
+    xor cx, cx
+
     ; do addition of 16bit
-    mov ax, num1
-    add ax, num2
-    mov ans, ax
+        
+        ; direct 16 bit code which won't handle intermediate hex result
+        ;mov ax, num1
+        ;add ax, num2
+        ;mov ans, ax
+
+
+        ; add lower byte
+        mov al, byte ptr num1
+        add al, byte ptr num2
+
+        daa     ;fix hex to bcd
+
+        ; assign lower byte
+        mov byte ptr ans, al
+
+        ; add higher byte
+        mov al, byte ptr num1 + 1
+        adc al, byte ptr num2 + 1
+        ; add carry from previous answer
+
+        daa     ;fix hex to bcd
+        mov byte ptr ans+1, al
+
+        ; store carry if it exists,
+        adc cx, 00
+
+    ; print carry if it is
+    cmp cx, 00
+    je no_carry
+
+    mov dl, 31h
+    mov ah, 02h
+    int 21h
+
+
+no_carry:
 
     ; print high 8bit of result
     mov bx, ans
