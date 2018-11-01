@@ -1,10 +1,27 @@
+Print macro x
+    mov dx, offset x
+    mov ah, 09
+    int 21h
+endm
+
+get_bit macro
+    mov ah, 01
+    int 21h
+    sub al, 30h
+    mov bl, al
+    int 21h
+    sub al, 30h
+    rol bl, 04
+    add al, bl
+endm
+
+
 data segment
-n1 db ?
-n2 db ?
-msg1 db,10, "Enter number 1 $"
-msg2 db,10, "Enter number 2 $"
-msg4 db,10, "Product = $"
-c db ?
+    n1 db ?
+    n2 db ?
+    msg1 db,10, "Enter number 1 $"
+    msg2 db,10, "Enter number 2 $"
+    msg3 db,10, "Product = $"
 data ends
 
 code segment
@@ -13,45 +30,20 @@ start:
         mov ax,data
         mov ds,ax
 
-        mov dx,offset msg1
-        mov ah,09
-        int 21h
+        Print msg1
 
-        mov ah,01
-        int 21h
-        sub al,30h
-        mov bl,al
-        int 21h
-        sub al,30h
-        rol bl,04
-        add al,bl
+        get_bit
         mov n1,al
 
-        mov dx,offset msg2
-        mov ah,09
-        int 21h
+        Print msg2
 
-        mov ah,01
-        int 21h
-        sub al,30h
-        mov bl,al
-        int 21h
-        sub al,30h
-        rol bl,04
-        add al,bl
+        get_bit
         mov n2,al
 
-        
-        cmp c,03
-        jz mult
-
-
-
-  mult: mov dx,offset msg4
-        mov ah,09
-        int 21h
+        Print msg3
 
         xor bx,bx
+
         mov bl,n1
         and bl,0f0h
         rol bl,04
@@ -81,9 +73,9 @@ start:
         mov al,ah
         xor ah,ah
         aam
+        
         mov dl,ah
         mov bl,al
-
         add dl,30h
         mov ah,02
         int 21h

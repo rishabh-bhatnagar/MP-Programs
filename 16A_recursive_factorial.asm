@@ -1,3 +1,21 @@
+print macro x
+    mov dx, offset x
+    mov ah, 09h
+    int 21h
+endm
+
+get_input macro
+    mov ah, 01h
+    int 21h     ;read first digit
+    sub al, 30h
+    mov bl, al
+    mov ah, 01h
+    int 21h     ;read second digit
+    sub al,30h
+    mov ah, bl  ; bring tens digit in al
+    aad
+endm
+
 data segment
     Num_bh           DB ?
     Fact_bh       DW ? ; 16 bit
@@ -5,12 +23,6 @@ data segment
     StrEnterNum     DB 10, 'Enter a num:', 10, '$'
     StrFactIs       DB 10, 'Factorial is: ', 10, '$'
 data ends
- 
-print macro x
-    mov dx, offset x
-    mov ah, 09h
-    int 21h
-endm
  
 code segment
 assume cs:code, ds:data
@@ -21,24 +33,15 @@ start:
  
     print StrEnterNum
  
-    mov ah, 01h
-    int 21h     ;read first digit
-    sub al, 30h
- 
-    mov bl, al
- 
-    mov ah, 01h
-    int 21h     ;read second digit
-        sub al,30h
-    mov ah, bl  ; bring tens digit in al
- 
-    aad        
+    get_input   
     mov Num_bh, al   ; store in var
  
     print StrFactIs
+    
     mov ax, 01h
     xor bx, bx
     mov bl, Num_bh
+
     CALL ProcFactorial
     xor cx, cx
     ;mov ax, Fact_bh

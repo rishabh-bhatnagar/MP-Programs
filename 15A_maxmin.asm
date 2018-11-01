@@ -1,15 +1,24 @@
 ;Find minimum and maximum element of an array.
 
 print macro x
-mov dx,offset x
-mov ah,09
-int 21h
+  mov dx,offset x
+  mov ah,09
+  int 21h
+endm
+
+print_output macro x
+  xor dx,dx
+  mov dl,x
+  add dl,30h
+  mov ah,02
+  int 21h
 endm
 
 data segment
 array1 db 10 dup(?)
 mn db ?
 mx db ?
+msg db 10,"Enter 10 elements: $"
 msg1 db 10,"Minimum:$"
 msg2 db 10,"Maximum:$"
 data ends
@@ -18,6 +27,8 @@ code segment
 assume cs: code,ds:data
 start: mov ax, data
        mov ds, ax
+
+       print msg
 
        mov cx, 08
        lea bx, array1
@@ -35,6 +46,7 @@ start: mov ax, data
        mov cx, 08
        mov ah, 00
        mov al, 09
+       
     l4:cmp bx[si],ah
        jg l1
        cmp bx[si],al
@@ -50,18 +62,10 @@ start: mov ax, data
     mov mx,ah
 
     print msg1
-    xor dx,dx
-    mov dl,mn
-    add dl,30h
-    mov ah,02
-    int 21h
+    print_output mn
 
     print msg2
-    xor dx,dx
-    mov dl,mx
-    add dl,30h
-    mov ah,02
-    int 21h
+    print_output mx
 
 mov ah,4ch
 int 21h

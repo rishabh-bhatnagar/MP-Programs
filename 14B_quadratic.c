@@ -1,8 +1,9 @@
-#include "stdio.h"
-int main(void){
+#include <stdio.h>
+void main(){
 	int a, b, c;
 	int four = 4;
 	int result;
+	clrscr();
 	printf("Enter the values of a, b, c : ");
 	scanf("%d, %d, %d", &a, &b, &c);
 	printf("%d, %d, %d", a, b, c);
@@ -23,5 +24,4 @@ int main(void){
 	}
 	printf("Valuse of b*b-4ac : %d", result);
 	getch();
-	return 0;
 }
