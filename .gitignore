@@ -3,6 +3,8 @@
 *.exe
 *.map
 
+TP*
+tp*
 
 DPMI16BI.OVL
 Dpmimem.dll
